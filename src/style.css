@@ -1,5 +1,10 @@
 body {
   background-color: burlywood;
 }
+body main {
+  overflow-y: scroll;
+  border: 1px solid black;
+  height: 400px;
+}
 
 /*# sourceMappingURL=style.css.map */
