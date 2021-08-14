@@ -22,9 +22,37 @@ firebase.initializeApp({
 const auth = firebase.auth();
 const firestore = firebase.firestore();
 
-function App(){
+function Main(){
   return (<div>
-    <h1>Hello World</h1>
+    <h1>This is main</h1>
+    <SignOut/>
+  </div>)
+}
+
+function SignIn(){
+
+  const signInWithGoogle = () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider);
+  }
+
+  return (<div>
+    <button onClick={signInWithGoogle}>Sign in with Google</button>
+  </div>)
+}
+
+function SignOut(){
+  return auth.currentUser && (
+  <button onClick={() => auth.signOut()}>Sign Out</button>
+  )
+}
+
+function App(){
+
+  const [user] = useAuthState(auth);
+
+  return (<div>
+    {user? <Main/> : <SignIn/>}
   </div>)
 }
 
