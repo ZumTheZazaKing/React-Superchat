@@ -1,4 +1,4 @@
-import React, { useState,useRef } from 'react';
+import React, { useState,useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import './style.css';
 import reportWebVitals from './reportWebVitals';
@@ -34,17 +34,22 @@ function Main(){
 
   const dummy = useRef();
 
+  useEffect(() => {
+    dummy.current.scrollIntoView({behavior:'smooth'});
+  })
+
   const sendMessage = async(e) => {
 
     e.preventDefault();
 
-    const { uid, photoURL } = auth.currentUser;
+    const { uid, photoURL, displayName } = auth.currentUser;
 
     await messagesRef.add({
       text:formValue,
       photoUrl:photoURL,
       uid:uid,
-      createdAt:firebase.firestore.FieldValue.serverTimestamp()
+      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+      name:displayName
     })
 
     setFormValue("");
@@ -54,28 +59,31 @@ function Main(){
   }
 
   return (<div>
+    <header>
+      <p>ZumSuperChat</p>
+      <SignOut/>
+    </header>
     <main>
       {messages && messages.map(msg => <ChatMessage key={msg.id} message={msg}/>)}
       <div ref={dummy}></div>
     </main>
 
     <form onSubmit={sendMessage}>
-      <input type="text" value={formValue} onChange={e => setFormValue(e.target.value)}/>
+      <input type="text" value={formValue} onChange={e => setFormValue(e.target.value)} required/>
       <input type="submit" value="Send"/>
     </form>
-    <SignOut/>
   </div>)
 }
 
 function ChatMessage(props){
 
-  const { text, uid, photoUrl } = props.message; 
+  const { text, uid, photoUrl, name } = props.message; 
 
   const messageClass = uid === auth.currentUser.uid ? 'sent' : 'received';
 
   return <div className={messageClass}>
-    <img alt="pp" src={photoUrl} width="50" height="50"/>
-    <p>{text}</p>
+    <img alt="pp" src={photoUrl} width="40" height="40"/>
+    <p><span>{uid === auth.currentUser.uid ? "You" : name}</span><br/>{text}</p>
   </div>
 }
 
@@ -86,8 +94,13 @@ function SignIn(){
     auth.signInWithPopup(provider);
   }
 
-  return (<div>
+  return (<div id="SignIn">
+    <p id="appTitle">ZumSuperChat</p>
+    <p>Sign in to talk with people across the world!</p>
+    <br/>
     <button onClick={signInWithGoogle}>Sign in with Google</button>
+    <br/>
+    <p id="footer">ZUMTHEZAZAKING &copy;2021</p>
   </div>)
 }
 
@@ -101,7 +114,7 @@ function App(){
 
   const [user] = useAuthState(auth);
 
-  return (<div>
+  return (<div id="App">
     {user? <Main/> : <SignIn/>}
   </div>)
 }
