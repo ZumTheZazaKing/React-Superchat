@@ -94,8 +94,8 @@ body main p {
   font-weight: bold;
 }
 body main span {
-  font-size: 14px;
-  color: black;
+  font-size: 2vh;
+  color: grey;
   float: left;
   margin-top: 5px;
   margin-right: 5px;
@@ -110,6 +110,7 @@ body main div.sent p {
 body main div.sent span {
   float: right;
   margin-left: 5px;
+  color: black;
 }
 body main::-webkit-scrollbar {
   width: 0.25rem;
